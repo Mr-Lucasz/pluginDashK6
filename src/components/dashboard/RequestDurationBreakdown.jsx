@@ -4,7 +4,7 @@ import EmptyState from "./EmptyState";
 import LoadingState from "./LoadingState";
 import ErrorState from "./ErrorState";
 
-const RequestDurationBreakdown = ({ breakdownData, isLoading, isError }) => {
+const RequestDurationBreakdown = ({ breakdownData, isLoading, isError, avgDuration }) => {
   if (isLoading) return <LoadingState message="Carregando breakdown..." />;
   if (isError) return <ErrorState message="Erro ao carregar breakdown." />;
 
@@ -12,7 +12,7 @@ const RequestDurationBreakdown = ({ breakdownData, isLoading, isError }) => {
     <div className={styles.card}>
       <div className={styles.flexBetween}>
         <h3 className={styles.title}>Request Duration Breakdown</h3>
-        <div className={styles.badge}>Avg. 1,240ms</div>
+        <div className={styles.badge}>Avg. {typeof breakdownData !== 'undefined' && breakdownData.length > 0 && typeof breakdownData[0].value === 'number' ? (avgDuration || breakdownData.reduce((acc, cur) => acc + cur.value, 0)) + 'ms' : 'N/A'}</div>
       </div>
       <div className={styles.spaceY2}>
         {(!breakdownData || breakdownData.length === 0) ? (
