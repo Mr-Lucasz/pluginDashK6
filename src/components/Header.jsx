@@ -1,8 +1,8 @@
 import React from "react";
-import { FaTachometerAlt, FaSyncAlt, FaChevronDown } from "react-icons/fa";
+import { FaTachometerAlt, FaSyncAlt } from "react-icons/fa";
 import styles from "./Header.module.css";
 
-const Header = ({ selectedFilter, onFilterChange, onRefresh, isRefreshing }) => (
+const Header = ({ onRefresh, isRefreshing, onFileUpload, uploadError, uploadSuccess }) => (
   <header className={`${styles.gradientBg} ${styles.header}`}>
     <div className={styles.container}>
       <div className={styles.flexRow}>
@@ -11,20 +11,30 @@ const Header = ({ selectedFilter, onFilterChange, onRefresh, isRefreshing }) => 
           <h1 className={styles.title}>K6 Performance Dashboard</h1>
         </div>
         <div className={styles.itemsCenter} style={{ gap: '1rem' }}>
-          <div className={styles.selectWrapper}>
-            <select
-              className={styles.select}
-              value={selectedFilter}
-              onChange={e => onFilterChange(e.target.value)}
-              aria-label="Select time range"
-            >
-              <option value="Last 1 hour" style={{ color: '#1f2937' }}>Last 1 hour</option>
-              <option value="Last 24 hours" style={{ color: '#1f2937' }}>Last 24 hours</option>
-              <option value="Last 7 days" style={{ color: '#1f2937' }}>Last 7 days</option>
-              <option value="Custom range" style={{ color: '#1f2937' }}>Custom range</option>
-            </select>
-            <FaChevronDown className={styles.chevron} />
-          </div>
+          <label htmlFor="upload-json" style={{
+            background: 'linear-gradient(90deg, #2563eb 0%, #0ea5e9 100%)',
+            color: '#fff',
+            padding: '0.5rem 1.5rem',
+            borderRadius: 10,
+            fontWeight: 500,
+            fontSize: 15,
+            cursor: 'pointer',
+            boxShadow: '0 2px 8px rgba(59,130,246,0.10)',
+            marginRight: 8,
+            transition: 'background 0.2s'
+          }}>
+            <span role="img" aria-label="Upload" style={{ marginRight: 6 }}>📤</span>
+            Upload JSON
+            <input
+              id="upload-json"
+              type="file"
+              accept=".json,application/json"
+              onChange={onFileUpload}
+              style={{ display: 'none' }}
+            />
+          </label>
+          {uploadError && <span style={{ color: '#ef4444', fontSize: 13 }}>{uploadError}</span>}
+          {uploadSuccess && <span style={{ color: '#22c55e', fontSize: 13 }}>Arquivo carregado!</span>}
           <button className={styles.refreshBtn} onClick={onRefresh} disabled={isRefreshing} aria-label="Refresh dashboard">
             <FaSyncAlt className={styles.refreshIcon} style={isRefreshing ? { animation: 'spin 1s linear infinite' } : {}} />
             <span>{isRefreshing ? 'Refreshing...' : 'Refresh'}</span>

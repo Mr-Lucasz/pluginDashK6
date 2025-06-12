@@ -8,3 +8,5 @@ createRoot(document.getElementById('root')).render(
     <App />
   </StrictMode>,
 )
+
+// Não há uso de className com string, mas mantenha o padrão do projeto para futuros ajustes.

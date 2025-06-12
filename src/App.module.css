@@ -64,3 +64,83 @@
   min-width: 0;
   box-sizing: border-box;
 }
+.filterButton {
+  padding: 0.25rem 0.75rem;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  background: #f3f4f6;
+  color: #374151;
+  transition: background 0.2s, color 0.2s;
+  cursor: pointer;
+}
+.filterButtonActive {
+  background: #2563eb;
+  color: #fff;
+}
+.cardMain {
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+.cardMainFull {
+  grid-column: 1 / -1;
+}
+.cardHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.cardTitle {
+  font-size: 20px;
+  font-weight: bold;
+  color: #1e293b;
+}
+.cardHeaderBtns {
+  display: flex;
+  gap: 8px;
+}
+.cardSecondary {
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+.cardSecondaryHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.cardSecondaryTitle {
+  font-weight: 600;
+  color: #374151;
+}
+.cardSecondaryBadge {
+  font-size: 12px;
+  background: #f3f4f6;
+  color: #4b5563;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+}
+.cardSecondaryChart {
+  height: 16rem;
+  width: 100%;
+  display: flex; /* Adicionado para centralizar o EmptyState */
+  align-items: center; /* Centraliza verticalmente */
+  justify-content: center; /* Centraliza horizontalmente */
+  text-align: center; 
+}
+.sectionTitle {
+  font-size: 20px;
+  font-weight: bold;
+  color: #1e293b;
+  margin-bottom: 24px;
+}

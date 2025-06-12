@@ -2,29 +2,44 @@
 
 .card {
   background: #fff;
-  border-radius: 1rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+
 }
 .flexBetween {
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
 }
 .title {
+  font-size: 1.125rem;
   font-weight: 600;
-  color: #374151;
+  color: #1f2937;
 }
 .badge {
+  background-color: #e0e7ff;
+  color: #4338ca;
   font-size: 0.75rem;
-  background: #f3f4f6;
-  color: #4b5563;
-  padding: 0.25rem 0.5rem;
+  font-weight: 500;
+  padding: 0.25rem 0.75rem;
   border-radius: 9999px;
 }
 .spaceY2 > * + * {
   margin-top: 0.5rem;
+}
+.spaceY2 {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 .label {
   font-size: 0.875rem;
@@ -49,11 +64,22 @@
   min-width: 8px;
   transition: width 0.3s;
 }
-.barBlue { background: #2563eb; }
-.barIndigo { background: #6366f1; }
-.barPurple { background: #a21caf; }
-.barPink { background: #db2777; }
-.barRed { background: #dc2626; }
+.barBlue {
+  background: #2563eb;
+}
+.barIndigo {
+  background: #6366f1;
+}
+.barPurple {
+  background: #a21caf;
+}
+.barPink {
+  background: #db2777;
+}
+.barRed {
+  background: #dc2626;
+}
+
 
 @media (max-width: 600px) {
   .card {
