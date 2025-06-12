@@ -1,0 +1,616 @@
+O DASH TÁ TODO DESCONFIGURADO, TIPO SÓ METADO DA TELA SEM A CORES, SEM OS COMPEONTES, O STYLES TBM, COMPARE TODO PROJETO REACT E VEJA O QUE FALTA: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K6 Performance Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e3a8a 0%, #0ea5e9 100%);
+        }
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .critical-flag {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+        }
+        .prediction-tooltip {
+            position: relative;
+        }
+        .prediction-tooltip:hover .tooltip-content {
+            opacity: 1;
+            visibility: visible;
+        }
+        .tooltip-content {
+            opacity: 0;
+            visibility: hidden;
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1f2937;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            transition: all 0.2s ease;
+            width: 200px;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="gradient-bg text-white shadow-lg">
+            <div class="container mx-auto px-4 py-6">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="flex items-center mb-4 md:mb-0">
+                        <i class="fas fa-tachometer-alt text-3xl mr-3"></i>
+                        <h1 class="text-2xl md:text-3xl font-bold">K6 Performance Dashboard</h1>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <select class="bg-white bg-opacity-20 border border-white border-opacity-30 rounded-full px-4 py-2 appearance-none text-white">
+                                <option class="text-gray-800">Last 1 hour</option>
+                                <option class="text-gray-800">Last 24 hours</option>
+                                <option class="text-gray-800" selected>Last 7 days</option>
+                                <option class="text-gray-800">Custom range</option>
+                            </select>
+                            <i class="fas fa-chevron-down absolute right-3 top-3 text-white"></i>
+                        </div>
+                        <button class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-full flex items-center">
+                            <i class="fas fa-sync-alt mr-2"></i>
+                            <span>Refresh</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Summary Cards -->
+        <section class="container mx-auto px-4 py-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- HTTP Requests Card -->
+                <div class="bg-white rounded-xl shadow-md p-6 transition-all duration-300 metric-card">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 font-medium">HTTP Requests</p>
+                            <h3 class="text-3xl font-bold mt-2">246,789</h3>
+                            <div class="flex items-center mt-2">
+                                <i class="fas fa-arrow-up text-green-500 mr-1"></i>
+                                <span class="text-green-500 font-medium">12.5%</span>
+                                <span class="text-gray-500 text-sm ml-2">vs last week</span>
+                            </div>
+                        </div>
+                        <div class="bg-blue-100 p-3 rounded-lg text-blue-600">
+                            <i class="fas fa-exchange-alt text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+                        <div class="h-16">
+                            <canvas id="httpReqsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Response Time Card -->
+                <div class="bg-white rounded-xl shadow-md p-6 transition-all duration-300 metric-card critical-flag">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 font-medium">Avg. Response Time</p>
+                            <h3 class="text-3xl font-bold mt-2">1,240<span class="text-xl">ms</span></h3>
+                            <div class="flex items-center mt-2">
+                                <i class="fas fa-arrow-up text-red-500 mr-1"></i>
+                                <span class="text-red-500 font-medium">28.7%</span>
+                                <span class="text-gray-500 text-sm ml-2">vs last week</span>
+                            </div>
+                        </div>
+                        <div class="bg-red-100 p-3 rounded-lg text-red-600">
+                            <i class="fas fa-clock text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+                        <div class="h-16">
+                            <canvas id="responseTimeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error Rate Card -->
+                <div class="bg-white rounded-xl shadow-md p-6 transition-all duration-300 metric-card">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 font-medium">Error Rate</p>
+                            <h3 class="text-3xl font-bold mt-2">3.2<span class="text-xl">%</span></h3>
+                            <div class="flex items-center mt-2">
+                                <i class="fas fa-arrow-down text-green-500 mr-1"></i>
+                                <span class="text-green-500 font-medium">1.4%</span>
+                                <span class="text-gray-500 text-sm ml-2">vs last week</span>
+                            </div>
+                        </div>
+                        <div class="bg-yellow-100 p-3 rounded-lg text-yellow-600">
+                            <i class="fas fa-exclamation-triangle text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+                        <div class="h-16">
+                            <canvas id="errorRateChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Virtual Users Card -->
+                <div class="bg-white rounded-xl shadow-md p-6 transition-all duration-300 metric-card">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 font-medium">Virtual Users</p>
+                            <h3 class="text-3xl font-bold mt-2">250</h3>
+                            <div class="flex items-center mt-2">
+                                <i class="fas fa-arrow-up text-green-500 mr-1"></i>
+                                <span class="text-green-500 font-medium">50%</span>
+                                <span class="text-gray-500 text-sm ml-2">vs last test</span>
+                            </div>
+                        </div>
+                        <div class="bg-purple-100 p-3 rounded-lg text-purple-600">
+                            <i class="fas fa-users text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+                        <div class="h-16">
+                            <canvas id="vusChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Dashboard -->
+        <section class="container mx-auto px-4 py-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Main Performance Chart -->
+                <div class="bg-white rounded-xl shadow-md p-6 lg:col-span-2">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-bold text-gray-800">Performance Overview</h2>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-1 bg-gray-100 rounded-lg text-gray-700 text-sm font-medium">HTTP Duration</button>
+                            <button class="px-3 py-1 bg-gray-100 rounded-lg text-gray-700 text-sm font-medium">Blocked Time</button>
+                            <button class="px-3 py-1 bg-blue-600 rounded-lg text-white text-sm font-medium">All Metrics</button>
+                        </div>
+                    </div>
+                    <div class="h-80">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Critical Metrics & Predictions -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-6">Metrics Breakdown</h2>
+                    
+                    <!-- Predictions Widget -->
+                    <div class="bg-indigo-50 rounded-lg p-4 mb-6">
+                        <div class="flex items-center mb-3">
+                            <i class="fas fa-chart-line text-indigo-600 mr-2"></i>
+                            <h3 class="font-semibold text-indigo-800">Performance Predictions</h3>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="prediction-tooltip">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Peak Load Time</span>
+                                    <span class="text-sm font-semibold">1,450ms <i class="fas fa-info-circle ml-1 text-indigo-500"></i></span>
+                                </div>
+                                <div class="tooltip-content text-xs">
+                                    Based on current trends, expected peak load time would reach 1,450ms in the next 24 hours
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                                    <div class="bg-indigo-600 h-1.5 rounded-full" style="width: 78%"></div>
+                                </div>
+                            </div>
+                            <div class="prediction-tooltip">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Error Rate Increase</span>
+                                    <span class="text-sm font-semibold">+4.2% <i class="fas fa-info-circle ml-1 text-indigo-500"></i></span>
+                                </div>
+                                <div class="tooltip-content text-xs">
+                                    Predicted error rate increase under current user growth patterns
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                                    <div class="bg-indigo-600 h-1.5 rounded-full" style="width: 42%"></div>
+                                </div>
+                            </div>
+                            <div class="prediction-tooltip">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Throughput Capacity</span>
+                                    <span class="text-sm font-semibold">82% <i class="fas fa-info-circle ml-1 text-indigo-500"></i></span>
+                                </div>
+                                <div class="tooltip-content text-xs">
+                                    Current capacity utilization with 15% buffer for traffic spikes
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                                    <div class="bg-indigo-600 h-1.5 rounded-full" style="width: 82%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Critical Metrics -->
+                    <div>
+                        <h3 class="font-semibold text-gray-700 mb-3">Critical Metrics</h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center p-3 bg-red-50 rounded-lg">
+                                <div class="flex items-center">
+                                    <div class="bg-red-100 p-2 rounded-full mr-3">
+                                        <i class="fas fa-clock text-red-500"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-red-800">High Connection Time</p>
+                                        <p class="text-xs text-red-600">http_req_connecting: 850ms</p>
+                                    </div>
+                                </div>
+                                <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">Critical</span>
+                            </div>
+                            <div class="flex justify-between items-center p-3 bg-orange-50 rounded-lg">
+                                <div class="flex items-center">
+                                    <div class="bg-orange-100 p-2 rounded-full mr-3">
+                                        <i class="fas fa-stopwatch text-orange-500"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-orange-800">Blocked Requests</p>
+                                        <p class="text-xs text-orange-600">http_req_blocked: 420ms</p>
+                                    </div>
+                                </div>
+                                <span class="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded-full">Warning</span>
+                            </div>
+                            <div class="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+                                <div class="flex items-center">
+                                    <div class="bg-blue-100 p-2 rounded-full mr-3">
+                                        <i class="fas fa-download text-blue-500"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-blue-800">Slow Response Time</p>
+                                        <p class="text-xs text-blue-600">http_req_receiving: 320ms</p>
+                                    </div>
+                                </div>
+                                <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">Monitor</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Detailed Metrics Section -->
+        <section class="container mx-auto px-4 py-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-6">Detailed HTTP Metrics</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Request Duration Breakdown -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-semibold text-gray-700">Request Duration Breakdown</h3>
+                        <div class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">Avg. 1,240ms</div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Waiting (TTFB)</span>
+                            <span class="text-sm font-medium">680ms</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-1.5">
+                            <div class="bg-blue-600 h-1.5 rounded-full" style="width: 55%"></div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Receiving</span>
+                            <span class="text-sm font-medium">320ms</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-1.5">
+                            <div class="bg-indigo-600 h-1.5 rounded-full" style="width: 26%"></div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Sending</span>
+                            <span class="text-sm font-medium">120ms</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-1.5">
+                            <div class="bg-purple-600 h-1.5 rounded-full" style="width: 10%"></div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Connecting</span>
+                            <span class="text-sm font-medium">85ms</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-1.5">
+                            <div class="bg-pink-600 h-1.5 rounded-full" style="width: 7%"></div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Blocked</span>
+                            <span class="text-sm font-medium">35ms</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-1.5">
+                            <div class="bg-red-600 h-1.5 rounded-full" style="width: 3%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Percentile Performance -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-semibold text-gray-700">Percentile Performance</h3>
+                        <div class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">p95 Threshold: 2,100ms</div>
+                    </div>
+                    <div class="h-64">
+                        <canvas id="percentileChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Status Code Distribution -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-semibold text-gray-700">Status Code Distribution</h3>
+                        <div class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">Total: 246,789</div>
+                    </div>
+                    <div class="h-64">
+                        <canvas id="statusCodeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Generate random data for the charts
+        function generateRandomData(count, min, max) {
+            return Array.from({length: count}, () => Math.floor(Math.random() * (max - min + 1)) + min);
+        }
+
+        function generateTimelineData(count, min, max) {
+            const data = [];
+            const now = new Date();
+            for (let i = count; i > 0; i--) {
+                const date = new Date(now);
+                date.setHours(date.getHours() - i);
+                data.push({
+                    x: date,
+                    y: Math.floor(Math.random() * (max - min + 1)) + min
+                });
+            }
+            return data;
+        }
+
+        // Small Sparkline Charts
+        function renderSmallChart(elementId, color, data) {
+            const ctx = document.getElementById(elementId).getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Array.from({length: 12}, (_, i) => i),
+                    datasets: [{
+                        data: data,
+                        borderColor: color,
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.4,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            display: false
+                        },
+                        y: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        // HTTP Requests Sparkline
+        renderSmallChart('httpReqsChart', '#3B82F6', generateRandomData(12, 80, 120));
+        // Response Time Sparkline
+        renderSmallChart('responseTimeChart', '#EF4444', generateRandomData(12, 70, 130));
+        // Error Rate Sparkline
+        renderSmallChart('errorRateChart', '#F59E0B', generateRandomData(12, 30, 70));
+        // VUs Sparkline
+        renderSmallChart('vusChart', '#8B5CF6', generateRandomData(12, 60, 100));
+
+        // Main Performance Chart
+        const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+        new Chart(performanceCtx, {
+            type: 'line',
+            data: {
+                datasets: [
+                    {
+                        label: 'Total Duration',
+                        data: generateTimelineData(24, 800, 1600),
+                        borderColor: '#3B82F6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Waiting (TTFB)',
+                        data: generateTimelineData(24, 400, 900),
+                        borderColor: '#8B5CF6',
+                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Blocked',
+                        data: generateTimelineData(24, 20, 100),
+                        borderColor: '#EF4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                    }
+                },
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'hour'
+                        },
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Duration (ms)'
+                        }
+                    }
+                },
+                interaction: {
+                    mode: 'nearest',
+                    axis: 'x',
+                    intersect: false
+                }
+            }
+        });
+
+        // Percentile Chart
+        const percentileCtx = document.getElementById('percentileChart').getContext('2d');
+        new Chart(percentileCtx, {
+            type: 'bar',
+            data: {
+                labels: ['p50', 'p75', 'p90', 'p95', 'p99'],
+                datasets: [{
+                    label: 'Response Time (ms)',
+                    data: [950, 1350, 1750, 2050, 2450],
+                    backgroundColor: [
+                        'rgba(59, 130, 246, 0.7)',
+                        'rgba(139, 92, 246, 0.7)',
+                        'rgba(239, 68, 68, 0.7)',
+                        'rgba(245, 158, 11, 0.7)',
+                        'rgba(16, 185, 129, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(59, 130, 246, 1)',
+                        'rgba(139, 92, 246, 1)',
+                        'rgba(239, 68, 68, 1)',
+                        'rgba(245, 158, 11, 1)',
+                        'rgba(16, 185, 129, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.dataset.label}: ${context.raw}ms`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Duration (ms)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Status Code Chart
+        const statusCodeCtx = document.getElementById('statusCodeChart').getContext('2d');
+        new Chart(statusCodeCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['2xx', '3xx', '4xx', '5xx'],
+                datasets: [{
+                    data: [235000, 8000, 2700, 1089],
+                    backgroundColor: [
+                        'rgba(16, 185, 129, 0.7)',
+                        'rgba(59, 130, 246, 0.7)',
+                        'rgba(245, 158, 11, 0.7)',
+                        'rgba(239, 68, 68, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(16, 185, 129, 1)',
+                        'rgba(59, 130, 246, 1)',
+                        'rgba(245, 158, 11, 1)',
+                        'rgba(239, 68, 68, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.raw || 0;
+                                const percentage = Math.round((value / 246789) * 100);
+                                return `${label}: ${value.toLocaleString()} (${percentage}%)`;
+                            }
+                        }
+                    }
+                },
+                cutout: '70%'
+            }
+        });
+
+        // Add hover effect for critical flag
+        document.querySelector('.critical-flag').addEventListener('mouseenter', function() {
+            this.classList.add('animate-pulse');
+        });
+        
+        document.querySelector('.critical-flag').addEventListener('mouseleave', function() {
+            this.classList.remove('animate-pulse');
+        });
+    </script>
+</body>
+</html>

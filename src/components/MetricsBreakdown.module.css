@@ -1,0 +1,93 @@
+/* MetricsBreakdown.module.css - CSS Modules para MetricsBreakdown */
+
+.card {
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  padding: 1.5rem;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #1e293b;
+  margin-bottom: 1.5rem;
+}
+.predictionWidget {
+  background: #eef2ff;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+.predictionTitle {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  color: #3730a3;
+}
+.predictionLabel {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+.predictionValue {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #3730a3;
+  display: flex;
+  align-items: center;
+}
+.predictionBarBg {
+  width: 100%;
+  background: #e5e7eb;
+  border-radius: 9999px;
+  height: 0.375rem;
+  margin-top: 0.25rem;
+}
+.predictionBar {
+  height: 0.375rem;
+  border-radius: 9999px;
+  background: #6366f1;
+}
+.criticalTitle {
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.75rem;
+}
+.criticalList > * + * {
+  margin-top: 0.75rem;
+}
+.criticalItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  background: #fef2f2;
+}
+.criticalIcon {
+  background: #fee2e2;
+  padding: 0.5rem;
+  border-radius: 9999px;
+  margin-right: 0.75rem;
+  display: flex;
+  align-items: center;
+}
+.criticalLabel {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #b91c1c;
+}
+.criticalValue {
+  font-size: 0.75rem;
+  color: #ef4444;
+}
+.criticalBadge {
+  font-size: 0.75rem;
+  background: #fee2e2;
+  color: #b91c1c;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+}

@@ -1,0 +1,66 @@
+/* App.module.css - CSS Modules para layout principal do App */
+
+.root {
+  min-height: 100vh;
+  background: #f3f4f6;
+}
+.section {
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+.gridSummary {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1.5rem;
+}
+@media (min-width: 768px) {
+  .gridSummary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 1024px) {
+  .gridSummary {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+.gridMain {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  width: 100%;
+}
+@media (min-width: 1024px) {
+  .gridMain {
+  grid-template-columns: 1fr;
+    align-items: flex-start;
+  }
+}
+.gridMain > *:first-child {
+  grid-column: 1 / -1;
+}
+.gridDetailed {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1.5rem;
+  width: 100%;
+}
+@media (max-width: 1023px) {
+  .gridDetailed {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 900px) {
+  .gridDetailed {
+    grid-template-columns: 1fr;
+  }
+}
+.gridDetailed > * {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}

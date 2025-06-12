@@ -1,0 +1,18 @@
+/* Removido Tailwind e ajustado para CSS Modules */
+
+body {
+  background: #f3f4f6;
+  margin: 0;
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+}
+
+/* Corrige container para responsividade igual ao projectBase.html */
+.container {
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* Outros estilos globais podem ser adicionados aqui conforme necessário */
