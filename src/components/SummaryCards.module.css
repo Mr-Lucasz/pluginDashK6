@@ -3,17 +3,19 @@
 .card {
   background: #fff;
   border-radius: 1rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   padding: 1.5rem;
   transition: box-shadow 0.3s, transform 0.3s;
- display: flex;
+  display: flex;
   align-items: center; /* Centraliza verticalmente */
   justify-content: center; /* Centraliza horizontalmente */
-  text-align: center; 
+  text-align: center;
+  flex-direction: column;
 }
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 .criticalFlag {
@@ -22,9 +24,15 @@
   -webkit-animation: pulse 2s infinite;
 }
 @keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
-  70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+  0% {
+    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(220, 38, 38, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0);
+  }
 }
 .flexBetween {
   display: flex;
