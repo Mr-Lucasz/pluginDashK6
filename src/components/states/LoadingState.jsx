@@ -1,5 +1,5 @@
 import React from "react";
-import loadingImg from "../assets/loading.png";
+import loadingImg from "../../assets/loading.png";
 import styles from './LoadingState.module.css';
 
 const LoadingState = ({ message = "Carregando dados..." }) => (

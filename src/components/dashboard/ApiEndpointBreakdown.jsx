@@ -1,8 +1,8 @@
 import React from "react";
 import styles from "./ApiEndpointBreakdown.module.css";
-import EmptyState from "./EmptyState";
-import LoadingState from "./LoadingState";
-import ErrorState from "./ErrorState";
+import EmptyState from "../states/EmptyState";
+import LoadingState from "../states/LoadingState";
+import ErrorState from "../states/ErrorState";
 
 const ApiEndpointBreakdown = ({ endpoints, isLoading, isError }) => {
 	if (isLoading) return <LoadingState message="Carregando endpoints..." />;

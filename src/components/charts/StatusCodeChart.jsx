@@ -1,9 +1,9 @@
 import React, { useRef, useEffect } from "react";
 import Chart from "chart.js/auto";
 import styles from "./StatusCodeChart.module.css";
-import EmptyState from "./EmptyState";
-import LoadingState from "./LoadingState";
-import ErrorState from "./ErrorState";
+import EmptyState from "../states/EmptyState";
+import LoadingState from "../states/LoadingState";
+import ErrorState from "../states/ErrorState";
 
 const StatusCodeChart = ({ chartData, isLoading, isError }) => {
   const chartRef = useRef(null);

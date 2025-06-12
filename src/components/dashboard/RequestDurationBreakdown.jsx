@@ -1,8 +1,8 @@
 import React from "react";
 import styles from "./RequestDurationBreakdown.module.css";
-import EmptyState from "./EmptyState";
-import LoadingState from "./LoadingState";
-import ErrorState from "./ErrorState";
+import EmptyState from "../states/EmptyState";
+import LoadingState from "../states/LoadingState";
+import ErrorState from "../states/ErrorState";
 
 const RequestDurationBreakdown = ({ breakdownData, isLoading, isError, avgDuration }) => {
   if (isLoading) return <LoadingState message="Carregando breakdown..." />;

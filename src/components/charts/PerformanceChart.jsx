@@ -3,9 +3,9 @@ import Chart from "chart.js/auto";
 import "chartjs-adapter-moment";
 import moment from "moment";
 import styles from "./PerformanceChart.module.css";
-import EmptyState from "./EmptyState";
-import LoadingState from "./LoadingState";
-import ErrorState from "./ErrorState";
+import EmptyState from "../states/EmptyState";
+import LoadingState from "../states/LoadingState";
+import ErrorState from "../states/ErrorState";
 
 const PerformanceChart = ({ filter = "all", chartData, isLoading, isError }) => {
   const chartRef = useRef(null);

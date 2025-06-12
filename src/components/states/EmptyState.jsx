@@ -1,5 +1,5 @@
 import React from "react";
-import emptyImg from "../assets/empty-folder.png";
+import emptyImg from "../../assets/empty-folder.png";
 import styles from './EmptyState.module.css';
 
 const EmptyState = ({ message = "Nenhum dado disponível." }) => (

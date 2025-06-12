@@ -1,7 +1,7 @@
 import React from "react";
-import EmptyState from "./EmptyState";
-import LoadingState from "./LoadingState";
-import ErrorState from "./ErrorState";
+import EmptyState from "../states/EmptyState";
+import LoadingState from "../states/LoadingState";
+import ErrorState from "../states/ErrorState";
 import styles from "./SummaryCards.module.css";
 
 // Funções de transformação para cada KPI
