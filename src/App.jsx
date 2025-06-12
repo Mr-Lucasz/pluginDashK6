@@ -23,6 +23,32 @@ const App = () => {
     }, 1200);
   };
 
+  const percentileChartData = {
+    labels: ["p50", "p75", "p90", "p95", "p99"],
+    data: [950, 1350, 1750, 2050, 2450]
+  };
+  const statusCodeChartData = {
+    labels: ["2xx", "3xx", "4xx", "5xx"],
+    datasets: [
+      {
+        data: [235000, 8000, 2700, 1089],
+        backgroundColor: [
+          "rgba(16, 185, 129, 0.7)",
+          "rgba(59, 130, 246, 0.7)",
+          "rgba(245, 158, 11, 0.7)",
+          "rgba(239, 68, 68, 0.7)"
+        ],
+        borderColor: [
+          "rgba(16, 185, 129, 1)",
+          "rgba(59, 130, 246, 1)",
+          "rgba(245, 158, 11, 1)",
+          "rgba(239, 68, 68, 1)"
+        ],
+        borderWidth: 1
+      }
+    ]
+  };
+
   return (
     <div className={styles.root}>
       {/* Header */}
@@ -115,7 +141,7 @@ const App = () => {
               <div style={{ fontSize: 12, background: '#f3f4f6', color: '#4b5563', padding: '0.25rem 0.5rem', borderRadius: 9999 }}>p95 Threshold: 2,100ms</div>
             </div>
             <div style={{ height: '16rem', width: '100%' }}>
-              <PercentileChart />
+              <PercentileChart chartData={percentileChartData} />
             </div>
           </div>
           <div style={{ background: '#fff', borderRadius: '1rem', boxShadow: '0 4px 12px rgba(0,0,0,0.08)', padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
@@ -124,7 +150,7 @@ const App = () => {
               <div style={{ fontSize: 12, background: '#f3f4f6', color: '#4b5563', padding: '0.25rem 0.5rem', borderRadius: 9999 }}>Total: 246,789</div>
             </div>
             <div style={{ height: '16rem', width: '100%' }}>
-              <StatusCodeChart />
+              <StatusCodeChart chartData={statusCodeChartData} />
             </div>
           </div>
         </div>

@@ -3,6 +3,9 @@ import Chart from "chart.js/auto";
 import "chartjs-adapter-moment";
 import moment from "moment";
 import styles from "./PerformanceChart.module.css";
+import EmptyState from "./EmptyState";
+import LoadingState from "./LoadingState";
+import ErrorState from "./ErrorState";
 
 function generateTimelineData(count, min, max) {
   const data = [];
@@ -18,7 +21,7 @@ function generateTimelineData(count, min, max) {
   return data;
 }
 
-const PerformanceChart = ({ filter = "all" }) => {
+const PerformanceChart = ({ filter = "all", chartData, isLoading, isError }) => {
   const chartRef = useRef(null);
 
   useEffect(() => {
@@ -76,6 +79,12 @@ const PerformanceChart = ({ filter = "all" }) => {
     });
     return () => chart.destroy();
   }, [filter]);
+
+  if (isLoading) return <LoadingState message="Carregando gráfico de performance..." />;
+  if (isError) return <ErrorState message="Erro ao carregar gráfico de performance." />;
+  if (chartData && chartData.length === 0) {
+    return <EmptyState message="Nenhum dado de performance disponível." />;
+  }
 
   return <canvas ref={chartRef} className={styles.chart} />;
 };

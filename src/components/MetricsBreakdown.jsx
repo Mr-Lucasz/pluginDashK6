@@ -1,6 +1,9 @@
 import React from "react";
 import { FaChartLine, FaInfoCircle, FaClock, FaStopwatch, FaDownload } from "react-icons/fa";
 import styles from "./MetricsBreakdown.module.css";
+import EmptyState from "./EmptyState";
+import LoadingState from "./LoadingState";
+import ErrorState from "./ErrorState";
 
 const predictions = [
   {
@@ -50,7 +53,7 @@ const criticalMetrics = [
   }
 ];
 
-const MetricsBreakdown = () => {
+const MetricsBreakdown = ({ isLoading, isError }) => {
   const [tooltip, setTooltip] = React.useState({ show: false, text: '', x: 0, y: 0 });
 
   const handleMouseEnter = (e, text) => {
@@ -58,6 +61,12 @@ const MetricsBreakdown = () => {
     setTooltip({ show: true, text, x: rect.left + rect.width / 2, y: rect.top });
   };
   const handleMouseLeave = () => setTooltip({ show: false, text: '', x: 0, y: 0 });
+
+  const hasPredictions = predictions && predictions.length > 0;
+  const hasCritical = criticalMetrics && criticalMetrics.length > 0;
+
+  if (isLoading) return <LoadingState message="Carregando métricas..." />;
+  if (isError) return <ErrorState message="Erro ao carregar métricas." />;
 
   return (
     <div className={styles.card} style={{ position: 'relative' }}>
@@ -69,26 +78,30 @@ const MetricsBreakdown = () => {
           <span>Performance Predictions</span>
         </div>
         <div>
-          {predictions.map((pred) => (
-            <div key={pred.label} style={{ marginBottom: 12 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span className={styles.predictionLabel}>{pred.label}</span>
-                <span className={styles.predictionValue} style={{ position: 'relative' }}>
-                  {pred.value} 
-                  <span
-                    onMouseEnter={e => handleMouseEnter(e, pred.tooltip)}
-                    onMouseLeave={handleMouseLeave}
-                    style={{ display: 'inline-block' }}
-                  >
-                    <FaInfoCircle style={{ marginLeft: 4, color: '#6366f1', cursor: 'pointer' }} />
+          {!hasPredictions ? (
+            <EmptyState message="Nenhuma previsão disponível." />
+          ) : (
+            predictions.map((pred) => (
+              <div key={pred.label} style={{ marginBottom: 12 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span className={styles.predictionLabel}>{pred.label}</span>
+                  <span className={styles.predictionValue} style={{ position: 'relative' }}>
+                    {pred.value} 
+                    <span
+                      onMouseEnter={e => handleMouseEnter(e, pred.tooltip)}
+                      onMouseLeave={handleMouseLeave}
+                      style={{ display: 'inline-block' }}
+                    >
+                      <FaInfoCircle style={{ marginLeft: 4, color: '#6366f1', cursor: 'pointer' }} />
+                    </span>
                   </span>
-                </span>
+                </div>
+                <div className={styles.predictionBarBg}>
+                  <div className={styles.predictionBar} style={{ width: `${pred.percent}%` }}></div>
+                </div>
               </div>
-              <div className={styles.predictionBarBg}>
-                <div className={styles.predictionBar} style={{ width: `${pred.percent}%` }}></div>
-              </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
         {tooltip.show && (
           <div
@@ -116,18 +129,22 @@ const MetricsBreakdown = () => {
       <div>
         <h3 className={styles.criticalTitle}>Critical Metrics</h3>
         <div className={styles.criticalList}>
-          {criticalMetrics.map((metric) => (
-            <div className={styles.criticalItem} key={metric.title}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <div className={metric.iconBg}>{metric.icon}</div>
-                <div>
-                  <p className={styles.criticalLabel}>{metric.title}</p>
-                  <p className={styles.criticalValue}>{metric.value}</p>
+          {!hasCritical ? (
+            <EmptyState message="Nenhum dado crítico disponível." />
+          ) : (
+            criticalMetrics.map((metric) => (
+              <div className={styles.criticalItem} key={metric.title}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <div className={metric.iconBg}>{metric.icon}</div>
+                  <div>
+                    <p className={styles.criticalLabel}>{metric.title}</p>
+                    <p className={styles.criticalValue}>{metric.value}</p>
+                  </div>
                 </div>
+                <span className={metric.badgeClass}>{metric.badge}</span>
               </div>
-              <span className={metric.badgeClass}>{metric.badge}</span>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
     </div>

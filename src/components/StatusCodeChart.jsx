@@ -1,8 +1,11 @@
 import React, { useRef, useEffect } from "react";
 import Chart from "chart.js/auto";
 import styles from "./StatusCodeChart.module.css";
+import EmptyState from "./EmptyState";
+import LoadingState from "./LoadingState";
+import ErrorState from "./ErrorState";
 
-const StatusCodeChart = () => {
+const StatusCodeChart = ({ chartData, isLoading, isError }) => {
   const chartRef = useRef(null);
 
   useEffect(() => {
@@ -49,6 +52,13 @@ const StatusCodeChart = () => {
     });
     return () => chart.destroy();
   }, []);
+
+  if (isLoading) return <LoadingState message="Carregando status codes..." />;
+  if (isError) return <ErrorState message="Erro ao carregar status codes." />;
+  const isEmpty = !chartData || !chartData.datasets || chartData.datasets[0].data.every(v => v === 0);
+  if (isEmpty) {
+    return <EmptyState message="Nenhum dado de status code disponível." />;
+  }
 
   return <canvas ref={chartRef} className={styles.chart} />;
 };

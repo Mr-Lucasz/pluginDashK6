@@ -1,6 +1,9 @@
 import React from "react";
 import { FaArrowUp, FaArrowDown, FaExchangeAlt, FaClock, FaExclamationTriangle, FaUsers } from "react-icons/fa";
 import SmallChart from "./SmallChart";
+import EmptyState from "./EmptyState";
+import LoadingState from "./LoadingState";
+import ErrorState from "./ErrorState";
 import styles from "./SummaryCards.module.css";
 
 const summaryCards = [
@@ -58,30 +61,40 @@ const summaryCards = [
 	}
 ];
 
-const SummaryCards = () => (
+const SummaryCards = ({ isLoading, isError }) => (
 	<>
-		{summaryCards.map((card, idx) => (
-			<div
-				key={card.title}
-				className={`${styles.card} ${card.cardClass}`}
-			>
-				<div className={styles.flexBetween}>
-					<div>
-						<p className={styles.textGray}>{card.title}</p>
-						<h3 className={styles.text3xl}>{card.value}</h3>
-						<div className={styles.flexItems} style={{ marginTop: 8 }}>
-							{card.trendIcon}
-							<span className={`${styles.trend} ${card.trendColor}`} style={{ marginLeft: 4 }}>{card.trend}</span>
-							<span className={styles.textGray} style={{ fontSize: 14, marginLeft: 8 }}>{card.sub}</span>
+		{isLoading ? (
+			<LoadingState message="Carregando KPIs..." />
+		) : isError ? (
+			<ErrorState message="Erro ao carregar KPIs." />
+		) : (
+			summaryCards.map((card, idx) => (
+				<div
+					key={card.title}
+					className={`${styles.card} ${card.cardClass}`}
+				>
+					<div className={styles.flexBetween}>
+						<div>
+							<p className={styles.textGray}>{card.title}</p>
+							<h3 className={styles.text3xl}>{card.value}</h3>
+							<div className={styles.flexItems} style={{ marginTop: 8 }}>
+								{card.trendIcon}
+								<span className={`${styles.trend} ${card.trendColor}`} style={{ marginLeft: 4 }}>{card.trend}</span>
+								<span className={styles.textGray} style={{ fontSize: 14, marginLeft: 8 }}>{card.sub}</span>
+							</div>
 						</div>
+						<div className={`${styles.iconBox} ${card.iconBg}`}>{card.icon}</div>
 					</div>
-					<div className={`${styles.iconBox} ${card.iconBg}`}>{card.icon}</div>
+					<div className={`${styles.mt4} ${styles.pt4} ${styles.borderTop} ${styles.h16}`}>
+						{!card.chartData || card.chartData.length === 0 ? (
+							<EmptyState message="Nenhum dado para este KPI." />
+						) : (
+							<SmallChart color={card.chartColor} data={card.chartData} />
+						)}
+					</div>
 				</div>
-				<div className={`${styles.mt4} ${styles.pt4} ${styles.borderTop} ${styles.h16}`}>
-					<SmallChart color={card.chartColor} data={card.chartData} />
-				</div>
-			</div>
-		))}
+			))
+		)}
 	</>
 );
 

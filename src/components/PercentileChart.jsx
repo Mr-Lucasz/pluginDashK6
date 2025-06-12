@@ -1,8 +1,11 @@
 import React, { useRef, useEffect } from "react";
 import Chart from "chart.js/auto";
 import styles from "./PercentileChart.module.css";
+import EmptyState from "./EmptyState";
+import LoadingState from "./LoadingState";
+import ErrorState from "./ErrorState";
 
-const PercentileChart = () => {
+const PercentileChart = ({ chartData = { labels: ["p50", "p75", "p90", "p95", "p99"], data: [0,0,0,0,0] }, isLoading, isError }) => {
   const chartRef = useRef(null);
 
   useEffect(() => {
@@ -51,6 +54,13 @@ const PercentileChart = () => {
     });
     return () => chart.destroy();
   }, []);
+
+  if (isLoading) return <LoadingState message="Carregando percentis..." />;
+  if (isError) return <ErrorState message="Erro ao carregar percentis." />;
+  const isEmpty = !chartData.data || chartData.data.every(v => v === 0);
+  if (isEmpty) {
+    return <EmptyState message="Nenhum dado de percentil disponível." />;
+  }
 
   return <canvas ref={chartRef} className={styles.chart} />;
 };
